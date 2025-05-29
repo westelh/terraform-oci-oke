@@ -5,6 +5,7 @@ locals {
   boot_volume_size = lookup(var.shape, "boot_volume_size", 50)
   memory           = lookup(var.shape, "memory", 4)
   ocpus            = max(1, lookup(var.shape, "ocpus", 1))
+  baseline = lookup(var.shape, "baseline", "BASELINE_1_1")
   shape            = lookup(var.shape, "shape", "VM.Standard.E4.Flex")
 }
 
@@ -63,6 +64,7 @@ resource "oci_core_instance" "operator" {
     content {
       ocpus         = local.ocpus
       memory_in_gbs = (local.memory / local.ocpus) > 64 ? (local.ocpus * 4) : local.memory
+      baseline_ocpu_utilization = local.baseline
     }
   }
 
