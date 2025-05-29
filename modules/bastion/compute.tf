@@ -5,6 +5,7 @@ locals {
   boot_volume_size = tonumber(lookup(var.shape, "boot_volume_size", 50))
   memory           = tonumber(lookup(var.shape, "memory", 4))
   ocpus            = max(1, tonumber(lookup(var.shape, "ocpus", 1)))
+  baseline         = lookup(var.shape, "baseline", "BASELINE_1_1")
   shape            = lookup(var.shape, "shape", "VM.Standard.E4.Flex")
 }
 
@@ -51,8 +52,9 @@ resource "oci_core_instance" "bastion" {
   dynamic "shape_config" {
     for_each = length(regexall("Flex", local.shape)) > 0 ? [1] : []
     content {
-      ocpus         = local.ocpus
-      memory_in_gbs = (local.memory / local.ocpus) > 64 ? (local.ocpus * 4) : local.memory
+      ocpus                     = local.ocpus
+      memory_in_gbs             = (local.memory / local.ocpus) > 64 ? (local.ocpus * 4) : local.memory
+      baseline_ocpu_utilization = local.baseline
     }
   }
 
