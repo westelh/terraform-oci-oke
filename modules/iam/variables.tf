@@ -30,3 +30,8 @@ variable "policy_name" { type = string }
 variable "cluster_kms_key_id" { type = string }
 variable "operator_volume_kms_key_id" { type = string }
 variable "worker_volume_kms_key_id" { type = string }
+
+#fss
+variable "create_fss_policy" {
+  type = bool
+}

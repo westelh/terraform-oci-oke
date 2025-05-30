@@ -48,6 +48,7 @@ locals {
       coalesce(var.cluster_kms_key_id, "none") != "none",
     ])
   ])
+  create_fss_policy = var.use_fss
   default_policy_name       = format("oke-cluster-%v", local.state_id)
   prerequisites_policy_name = format("oke-cluster-prerequisites-%v", local.state_id)
 }
@@ -64,6 +65,7 @@ module "iam_cluster_prerequisites" {
   create_iam_kms_policy        = local.create_iam_kms_policy
   create_iam_operator_policy   = false
   create_iam_worker_policy     = false
+  create_fss_policy = false
   policy_name                  = local.prerequisites_policy_name
 
   create_iam_tag_namespace = var.create_iam_tag_namespace
@@ -100,6 +102,7 @@ module "iam" {
   create_iam_kms_policy        = false
   create_iam_operator_policy   = local.create_iam_operator_policy
   create_iam_worker_policy     = local.create_iam_worker_policy
+  create_fss_policy = local.create_fss_policy
   policy_name                  = local.default_policy_name
 
   create_iam_tag_namespace = var.create_iam_tag_namespace

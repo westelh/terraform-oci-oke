@@ -2,11 +2,16 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl
 
 locals {
+  fss_policy_statements = [
+    "ALLOW any-user to manage file-family in compartment id ${var.compartment_id} where request.principal.type = 'cluster'",
+    "ALLOW any-user to use virtual-network-family in compartment id ${var.compartment_id} where request.principal.type = 'cluster'"
+  ]
   policy_statements = distinct(compact(flatten([
     local.cluster_policy_statements,
     local.worker_policy_statements,
     local.operator_policy_statements,
     local.autoscaler_policy_statements,
+    local.fss_policy_statements,
   ])))
 
   has_policy_statements = var.create_iam_resources && anytrue([
@@ -14,6 +19,7 @@ locals {
     var.create_iam_kms_policy,
     var.create_iam_operator_policy,
     var.create_iam_worker_policy,
+    var.create_fss_policy,
   ])
 }
 
