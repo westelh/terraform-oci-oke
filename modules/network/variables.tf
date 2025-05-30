@@ -22,6 +22,7 @@ variable "allow_rules_workers" { type = any }
 variable "allow_worker_internet_access" { type = bool }
 variable "allow_worker_ssh_access" { type = bool }
 variable "allow_bastion_cluster_access" { type = bool }
+variable "allow_lb_pod_access" { type = bool }
 variable "assign_dns" { type = bool }
 variable "bastion_allowed_cidrs" { type = set(string) }
 variable "bastion_is_public" { type = bool }

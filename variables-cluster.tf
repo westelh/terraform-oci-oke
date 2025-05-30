@@ -140,3 +140,8 @@ variable "fss_availability_domain" {
   type    = string
   default = ""
 }
+
+variable "allow_lb_pod_access" {
+  type    = bool
+  default = false
+}

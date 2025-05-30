@@ -34,6 +34,11 @@ locals {
         protocol = local.icmpv6_protocol, port = local.all_ports, destination = local.worker_nsg_id, destination_type = local.rule_type_nsg,
       },
     } : {},
+    var.allow_lb_pod_access ? {
+      "Allow TCP egress from public load balancers to pods": {
+        protocol = local.tcp_protocol, port = local.all_ports, destination = local.pod_nsg_id, destination_type = local.rule_type_nsg,
+      },
+    } : {},
     var.enable_waf ? local.waf_rules : {},
     var.allow_rules_public_lb,
   ) : {}

@@ -70,6 +70,16 @@ locals {
           protocol = local.all_protocols, port = local.all_ports, destination = local.anywhere, destination_type = local.rule_type_cidr,
         }
     }) : {},
+
+    var.allow_lb_pod_access ? {
+      "Allow TCP ingress from Public loadbalancers" : {
+        protocol = local.tcp_protocol, port = local.all_ports, source = local.pub_lb_nsg_id, source_type = local.rule_type_nsg,
+      },
+      "Allow TCP ingress from Private loadbalancers" : {
+        protocol = local.tcp_protocol, port = local.all_ports, source = local.int_lb_nsg_id, source_type = local.rule_type_nsg,
+      },
+    } : {},
+
     var.allow_rules_pods
   ) : {}
 }
