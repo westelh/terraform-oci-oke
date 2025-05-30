@@ -2,6 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl
 
 locals {
+  cluster_identity_domain_name = "Default"
   cluster_group_name = format("oke-cluster-%v", var.state_id)
   cluster_rule = format("ALL {%v}", join(", ", compact([
     "resource.type = 'cluster'",
@@ -12,10 +13,10 @@ locals {
 
   # Cluster secrets encryption using OCI Key Management System (KMS)
   cluster_policy_statements = coalesce(var.cluster_kms_key_id, "none") != "none" ? tolist([format(
-    "Allow dynamic-group %v to use keys in compartment id %v where target.key.id = '%v'",
-    local.cluster_group_name, var.compartment_id, var.cluster_kms_key_id,
-  ), format("Allow dynamic-group %v to read instance-images in compartment id %v",
-    local.cluster_group_name, var.compartment_id)
+    "Allow dynamic-group '%v'/'%v' to use keys in compartment id %v where target.key.id = '%v'",
+    local.cluster_identity_domain_name,local.cluster_group_name, var.compartment_id, var.cluster_kms_key_id,
+  ), format("Allow dynamic-group '%v'/'%v' to read instance-images in compartment id %v",
+    local.cluster_identity_domain_name,local.cluster_group_name, var.compartment_id)
   ]) : []
 }
 

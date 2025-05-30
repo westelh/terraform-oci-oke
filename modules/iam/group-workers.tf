@@ -2,6 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl
 
 locals {
+  worker_identity_domain_name = "Default"
   worker_group_name          = format("oke-workers-%v", var.state_id)
   worker_compartments        = coalescelist(var.worker_compartments, [var.compartment_id])
   worker_compartment_matches = formatlist("instance.compartment.id = '%v'", local.worker_compartments)
@@ -18,15 +19,15 @@ locals {
   ])))
 
   cluster_join_statements = formatlist(
-    "Allow dynamic-group %v to {CLUSTER_JOIN} in compartment id %v where %v",
-    local.worker_group_name, local.worker_compartments, local.cluster_join_where_clause
+    "Allow dynamic-group '%v'/'%v' to {CLUSTER_JOIN} in compartment id %v where %v",
+    local.worker_identity_domain_name,local.worker_group_name, local.worker_compartments, local.cluster_join_where_clause
   )
 
   # TODO support keys defined at worker group level
   worker_kms_volume_templates = tolist([
     "Allow service oke to USE key-delegates in compartment id %v where target.key.id = '%v'",
     "Allow service blockstorage to USE keys in compartment id %v where target.key.id = '%v'",
-    "Allow dynamic-group ${local.worker_group_name} to USE key-delegates in compartment id %v where target.key.id = '%v'"
+    "Allow dynamic-group '${local.worker_identity_domain_name}'/'${local.worker_group_name}' to USE key-delegates in compartment id %v where target.key.id = '%v'"
   ])
 
   # Block volume encryption using OCI Key Management System (KMS)

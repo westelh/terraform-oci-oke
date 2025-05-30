@@ -2,6 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl
 
 locals {
+  autoscaler_identity_domain_name = "Default"
   autoscaler_group_name          = format("oke-autoscaler-%v", var.state_id)
   autoscaler_compartments        = coalescelist(var.autoscaler_compartments, [var.compartment_id])
   autoscaler_compartment_matches = formatlist("instance.compartment.id = '%v'", local.autoscaler_compartments)
@@ -15,19 +16,19 @@ locals {
   ])) : local.autoscaler_compartment_rule
 
   autoscaler_templates = [
-    "Allow dynamic-group %v to manage cluster-node-pools in compartment id %v",
-    "Allow dynamic-group %v to manage compute-management-family in compartment id %v",
-    "Allow dynamic-group %v to manage instance-family in compartment id %v",
-    "Allow dynamic-group %v to manage volume-family in compartment id %v",
-    "Allow dynamic-group %v to use subnets in compartment id %v",
-    "Allow dynamic-group %v to read virtual-network-family in compartment id %v",
-    "Allow dynamic-group %v to use vnics in compartment id %v",
-    "Allow dynamic-group %v to inspect compartments in compartment id %v",
+    "Allow dynamic-group '%v'/'%v' to manage cluster-node-pools in compartment id %v",
+    "Allow dynamic-group '%v'/'%v' to manage compute-management-family in compartment id %v",
+    "Allow dynamic-group '%v'/'%v' to manage instance-family in compartment id %v",
+    "Allow dynamic-group '%v'/'%v' to manage volume-family in compartment id %v",
+    "Allow dynamic-group '%v'/'%v' to use subnets in compartment id %v",
+    "Allow dynamic-group '%v'/'%v' to read virtual-network-family in compartment id %v",
+    "Allow dynamic-group '%v'/'%v' to use vnics in compartment id %v",
+    "Allow dynamic-group '%v'/'%v' to inspect compartments in compartment id %v",
   ]
 
   autoscaler_policy_statements = var.create_iam_autoscaler_policy ? tolist([
     for statement in local.autoscaler_templates : formatlist(statement,
-      local.autoscaler_group_name, local.worker_compartments,
+      local.autoscaler_identity_domain_name,local.autoscaler_group_name, local.worker_compartments,
     )
   ]) : []
 }

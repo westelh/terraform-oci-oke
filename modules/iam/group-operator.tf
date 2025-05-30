@@ -2,6 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl
 
 locals {
+  operator_identity_domain_name = "Default"
   operator_group_name = format("oke-operator-%v", var.state_id)
   operator_group_rules = var.use_defined_tags ? format("ALL {%v}", join(", ", [
     format("tag.%v.role.value='operator'", var.tag_namespace),
@@ -9,14 +10,14 @@ locals {
   ])) : "ALL {instance.compartment.id = '${var.compartment_id}'}"
 
   cluster_manage_statement = format(
-    "Allow dynamic-group %v to MANAGE clusters in compartment id %v",
-    local.operator_group_name, var.compartment_id,
+    "Allow dynamic-group '%v'/'%v' to MANAGE clusters in compartment id %v",
+    local.operator_identity_domain_name,local.operator_group_name, var.compartment_id,
   )
 
   # TODO support keys defined at worker group level
   operator_kms_volume_templates = [
     "Allow service blockstorage to USE keys in compartment id %v where target.key.id = '%v'",
-    "Allow dynamic-group ${local.operator_group_name} to USE key-delegates in compartment id %v where target.key.id = '%v'"
+    "Allow dynamic-group '${local.operator_identity_domain_name}'/'${local.operator_group_name}' to USE key-delegates in compartment id %v where target.key.id = '%v'"
   ]
 
   # Block volume encryption using OCI Key Management System (KMS)
