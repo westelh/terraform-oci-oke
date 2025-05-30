@@ -3,10 +3,10 @@
 
 locals {
   worker_identity_domain_name = "Default"
-  worker_group_name          = format("oke-workers-%v", var.state_id)
-  worker_compartments        = coalescelist(var.worker_compartments, [var.compartment_id])
-  worker_compartment_matches = formatlist("instance.compartment.id = '%v'", local.worker_compartments)
-  worker_compartment_rule    = format("ANY {%v}", join(", ", local.worker_compartment_matches))
+  worker_group_name           = format("oke-workers-%v", var.state_id)
+  worker_compartments         = coalescelist(var.worker_compartments, [var.compartment_id])
+  worker_compartment_matches  = formatlist("instance.compartment.id = '%v'", local.worker_compartments)
+  worker_compartment_rule     = format("ANY {%v}", join(", ", local.worker_compartment_matches))
 
   worker_group_rules = var.use_defined_tags ? format("ALL {%v}", join(", ", [
     format("tag.%v.role.value='worker'", var.tag_namespace),
@@ -20,7 +20,7 @@ locals {
 
   cluster_join_statements = formatlist(
     "Allow dynamic-group '%v'/'%v' to {CLUSTER_JOIN} in compartment id %v where %v",
-    local.worker_identity_domain_name,local.worker_group_name, local.worker_compartments, local.cluster_join_where_clause
+    local.worker_identity_domain_name, local.worker_group_name, local.worker_compartments, local.cluster_join_where_clause
   )
 
   # TODO support keys defined at worker group level

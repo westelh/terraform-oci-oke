@@ -3,7 +3,7 @@
 
 locals {
   operator_identity_domain_name = "Default"
-  operator_group_name = format("oke-operator-%v", var.state_id)
+  operator_group_name           = format("oke-operator-%v", var.state_id)
   operator_group_rules = var.use_defined_tags ? format("ALL {%v}", join(", ", [
     format("tag.%v.role.value='operator'", var.tag_namespace),
     format("tag.%v.state_id.value='%v'", var.tag_namespace, var.state_id),
@@ -11,7 +11,7 @@ locals {
 
   cluster_manage_statement = format(
     "Allow dynamic-group '%v'/'%v' to MANAGE clusters in compartment id %v",
-    local.operator_identity_domain_name,local.operator_group_name, var.compartment_id,
+    local.operator_identity_domain_name, local.operator_group_name, var.compartment_id,
   )
 
   # TODO support keys defined at worker group level

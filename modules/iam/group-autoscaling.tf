@@ -3,10 +3,10 @@
 
 locals {
   autoscaler_identity_domain_name = "Default"
-  autoscaler_group_name          = format("oke-autoscaler-%v", var.state_id)
-  autoscaler_compartments        = coalescelist(var.autoscaler_compartments, [var.compartment_id])
-  autoscaler_compartment_matches = formatlist("instance.compartment.id = '%v'", local.autoscaler_compartments)
-  autoscaler_compartment_rule    = format("ANY {%v}", join(", ", local.autoscaler_compartment_matches))
+  autoscaler_group_name           = format("oke-autoscaler-%v", var.state_id)
+  autoscaler_compartments         = coalescelist(var.autoscaler_compartments, [var.compartment_id])
+  autoscaler_compartment_matches  = formatlist("instance.compartment.id = '%v'", local.autoscaler_compartments)
+  autoscaler_compartment_rule     = format("ANY {%v}", join(", ", local.autoscaler_compartment_matches))
 
   autoscaler_group_rules = var.use_defined_tags ? format("ALL {%v}", join(", ", [
     format("tag.%v.role.value='worker'", var.tag_namespace),
@@ -28,7 +28,7 @@ locals {
 
   autoscaler_policy_statements = var.create_iam_autoscaler_policy ? tolist([
     for statement in local.autoscaler_templates : formatlist(statement,
-      local.autoscaler_identity_domain_name,local.autoscaler_group_name, local.worker_compartments,
+      local.autoscaler_identity_domain_name, local.autoscaler_group_name, local.worker_compartments,
     )
   ]) : []
 }
