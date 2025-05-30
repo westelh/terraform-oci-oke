@@ -66,3 +66,12 @@ variable "nsgs" {
     id     = optional(string)
   }))
 }
+
+# fss
+variable "use_fss" {
+  type = bool
+}
+
+variable "fss_availability_domain" {
+  type = string
+}

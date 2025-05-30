@@ -156,6 +156,8 @@ module "network" {
   vcn_ipv6_cidr                = local.vcn_ipv6_cidr
   vcn_id                       = local.vcn_id
   worker_is_public             = var.worker_is_public
+  use_fss                      = var.use_fss
+  fss_availability_domain      = coalesce(var.fss_availability_domain, lookup(local.ad_numbers_to_names, local.ad_numbers[0]))
 }
 
 # VCN

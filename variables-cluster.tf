@@ -130,3 +130,13 @@ variable "oidc_token_authentication_config" {
   description = "The properties that configure OIDC token authentication in kube-apiserver. See <a href=https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengOpenIDConnect-Authentication.htm>OIDC Token Authentication configuration documentation</a>."
   type        = any
 }
+
+variable "use_fss" {
+  default = true
+  type    = bool
+}
+
+variable "fss_availability_domain" {
+  type    = string
+  default = ""
+}
